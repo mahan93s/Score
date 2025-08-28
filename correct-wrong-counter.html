@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Correct/Wrong Counter</title>
+  <style>
+    :root { font-family: system-ui, Arial, sans-serif; }
+    body { display: grid; place-items: center; min-height: 100dvh; margin: 0; background: #f7f7f8; }
+    .app {
+      width: min(520px, 92vw);
+      background: white; padding: 20px; border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.08);
+    }
+    h1 { margin: 0 0 14px; font-size: 20px; font-weight: 700; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    button {
+      flex: 1 1 160px; font-size: 18px; font-weight: 600; padding: 14px 16px;
+      border-radius: 12px; border: 0; cursor: pointer; transition: transform .06s ease-out, box-shadow .06s ease-out;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    button:active { transform: translateY(1px); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+    .correct { background: #16a34a; color: white; }
+    .wrong { background: #dc2626; color: white; }
+    .reset { background: #e5e7eb; color: #111827; }
+    .stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+      margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee;
+    }
+    .card {
+      background: #f9fafb; border: 1px solid #eef0f2; border-radius: 12px; padding: 12px;
+      text-align: center;
+    }
+    .label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; }
+    .value { font-size: 28px; font-weight: 800; margin-top: 6px; }
+    .score { margin-top: 16px; text-align: center; font-size: 18px; font-weight: 600; }
+    footer { margin-top: 14px; font-size: 12px; color: #6b7280; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="app" role="application" aria-label="Correct and wrong counter">
+    <h1>Correct/Wrong Counter</h1>
+
+    <div class="row" aria-label="Controls">
+      <button class="correct" id="btn-correct" aria-label="Add correct ✅">✅ Correct</button>
+      <button class="wrong" id="btn-wrong" aria-label="Add wrong ❌">❌ Wrong</button>
+      <button class="reset" id="btn-reset" aria-label="Reset counts">Reset</button>
+    </div>
+
+    <section class="stats" aria-live="polite">
+      <div class="card">
+        <div class="label">Correct</div>
+        <div class="value" id="count-correct">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Wrong</div>
+        <div class="value" id="count-wrong">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Total</div>
+        <div class="value" id="count-total">0</div>
+      </div>
+    </section>
+
+    <div class="score" id="score-display">Score: 0 / 0 (0%)</div>
+
+    <footer>Tip: use keyboard C for correct, W for wrong, R to reset.</footer>
+  </main>
+
+  <script>
+    let correct = 0;
+    let wrong = 0;
+
+    const elCorrect = document.getElementById('count-correct');
+    const elWrong = document.getElementById('count-wrong');
+    const elTotal = document.getElementById('count-total');
+    const elScore = document.getElementById('score-display');
+
+    function render() {
+      const total = correct + wrong;
+      elCorrect.textContent = String(correct);
+      elWrong.textContent = String(wrong);
+      elTotal.textContent = String(total);
+      const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+      elScore.textContent = `Score: ${correct} / ${total} (${percentage}%)`;
+    }
+
+    function incCorrect() { correct += 1; render(); }
+    function incWrong() { wrong += 1; render(); }
+    function resetAll() { correct = 0; wrong = 0; render(); }
+
+    document.getElementById('btn-correct').addEventListener('click', incCorrect);
+    document.getElementById('btn-wrong').addEventListener('click', incWrong);
+    document.getElementById('btn-reset').addEventListener('click', resetAll);
+
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      if (key === 'c') incCorrect();
+      if (key === 'w') incWrong();
+      if (key === 'r') resetAll();
+    });
+
+    render();
+  </script>
+</body>
+</html>
